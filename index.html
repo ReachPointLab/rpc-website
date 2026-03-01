@@ -3,10 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Reach Point Capital</title>
+  <title>Reach Point Capital | Alternative Investment Management</title>
+  <meta name="description" content="Reach Point Capital is a Delaware-registered alternative investment firm focused on disciplined research and capital allocation." />
+  <link rel="icon" type="image/png" href="logo-horizontal.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after {
       box-sizing: border-box;
@@ -17,12 +19,17 @@
     :root {
       --navy: #1B3A6B;
       --silver: #A0A9B8;
-      --border: #E2E5EA;
-      --text-light: #6B7280;
+      --text-grey: #6B7280;
+      --label-grey: #9CA3AF;
     }
 
-    html, body {
-      height: 100%;
+    html {
+      scroll-behavior: smooth;
+    }
+
+    ::selection {
+      background-color: var(--navy);
+      color: #ffffff;
     }
 
     body {
@@ -30,121 +37,186 @@
       background-color: #ffffff;
       color: var(--navy);
       -webkit-font-smoothing: antialiased;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
+      -moz-osx-font-smoothing: grayscale;
     }
 
-    /* Header */
+    /* ── Header ── */
     header {
-      text-align: center;
-      padding: 52px 24px 48px;
-      border-bottom: 1px solid var(--navy);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      height: 70px;
+      background-color: var(--navy);
+      border-bottom: 1px solid var(--silver);
+      display: flex;
+      align-items: center;
+      padding: 0 48px;
     }
 
     header img {
-      width: 280px;
-      max-width: 100%;
+      width: 200px;
       display: block;
-      margin: 0 auto;
     }
 
-    /* Main */
-    main {
-      flex: 1;
+    /* ── Hero ── */
+    .hero {
+      height: calc(100vh - 70px);
+      margin-top: 70px;
+      background-color: #F7F8FA;
+      background-image: repeating-linear-gradient(
+        135deg,
+        transparent,
+        transparent 40px,
+        rgba(27, 58, 107, 0.025) 40px,
+        rgba(27, 58, 107, 0.025) 41px
+      );
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 24px;
+    }
+
+    .hero-inner {
       display: flex;
       flex-direction: column;
-      justify-content: center;
-    }
-
-    /* Hero */
-    .hero {
-      text-align: center;
-      padding: 96px 24px 80px;
+      align-items: center;
     }
 
     .hero h1 {
-      font-size: clamp(1.5rem, 4vw, 2.25rem);
-      font-weight: 500;
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 52px;
       color: var(--navy);
-      letter-spacing: -0.02em;
-      line-height: 1.3;
-      max-width: 680px;
-      margin: 0 auto 28px;
+      letter-spacing: 0.02em;
+      line-height: 1.2;
+      max-width: 820px;
+    }
+
+    .hero-divider {
+      width: 80px;
+      height: 1px;
+      background-color: var(--silver);
+      margin: 40px auto;
     }
 
     .hero p {
-      font-size: clamp(0.9rem, 2vw, 1rem);
+      font-family: 'Inter', sans-serif;
       font-weight: 400;
-      color: var(--text-light);
-      line-height: 1.75;
-      max-width: 520px;
-      margin: 0 auto;
+      font-size: 18px;
+      color: var(--text-grey);
+      line-height: 1.8;
+      max-width: 600px;
     }
 
-    /* Contact */
+    /* ── Section Divider ── */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background-color: var(--navy);
+    }
+
+    /* ── Contact ── */
     .contact {
+      background-color: #ffffff;
+      padding: 100px 24px;
       text-align: center;
-      padding: 0 24px 96px;
     }
 
-    .contact p {
-      font-size: 0.95rem;
-      color: var(--text-light);
+    .contact-label {
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: var(--label-grey);
+      text-transform: uppercase;
+    }
+
+    .contact-email-wrap {
+      margin-top: 30px;
     }
 
     .contact a {
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      font-size: 20px;
       color: var(--navy);
       text-decoration: none;
-      font-weight: 500;
-      border-bottom: 1px solid transparent;
-      transition: border-color 0.2s ease;
+      transition: color 0.2s ease;
     }
 
     .contact a:hover {
-      border-bottom-color: var(--navy);
+      color: #2E5FA3;
+      text-decoration: underline;
     }
 
-    /* Footer */
+    /* ── Footer ── */
     footer {
+      background-color: var(--navy);
+      border-top: 1px solid var(--silver);
+      padding: 60px 24px;
       text-align: center;
-      padding: 28px 24px;
-      border-top: 1px solid var(--border);
     }
 
-    footer p {
-      font-size: 0.78rem;
-      color: var(--silver);
-      line-height: 1.8;
+    footer .footer-copy {
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      font-size: 13px;
+      color: #ffffff;
+      margin-bottom: 16px;
+    }
+
+    footer .footer-sub {
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      font-size: 12px;
+      color: var(--label-grey);
     }
 
     footer a {
       color: var(--silver);
       text-decoration: none;
-      border-bottom: 1px solid transparent;
-      transition: border-color 0.2s ease;
+      transition: text-decoration 0.2s ease;
     }
 
     footer a:hover {
-      border-bottom-color: var(--silver);
+      text-decoration: underline;
     }
 
-    /* Mobile */
-    @media (max-width: 480px) {
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
       header {
-        padding: 40px 24px 36px;
+        padding: 0 24px;
       }
 
       header img {
-        width: 220px;
+        width: 160px;
+      }
+
+      .hero h1 {
+        font-size: 32px;
       }
 
       .hero {
-        padding: 72px 24px 64px;
+        padding: 0 20px;
+      }
+
+      .hero-divider {
+        margin: 28px auto;
+      }
+
+      .hero p {
+        font-size: 16px;
       }
 
       .contact {
-        padding: 0 24px 72px;
+        padding: 50px 24px;
+      }
+
+      footer {
+        padding: 30px 24px;
       }
     }
   </style>
@@ -155,20 +227,28 @@
     <img src="logo-horizontal.png" alt="Reach Point Capital" />
   </header>
 
-  <main>
-    <section class="hero">
+  <section class="hero">
+    <div class="hero-inner">
       <h1>Alternative Investment Management &amp; Capital Allocation</h1>
+      <div class="hero-divider"></div>
       <p>Reach Point Capital is a Delaware-registered alternative investment firm focused on disciplined research and capital allocation.</p>
-    </section>
+    </div>
+  </section>
 
-    <section class="contact">
-      <p>For inquiries: <a href="mailto:info@reachpointcapital.com">info@reachpointcapital.com</a></p>
-    </section>
-  </main>
+  <div class="divider"></div>
+
+  <section class="contact">
+    <p class="contact-label">For Inquiries</p>
+    <div class="contact-email-wrap">
+      <a href="mailto:info@reachpointcapital.com">info@reachpointcapital.com</a>
+    </div>
+  </section>
+
+  <div class="divider"></div>
 
   <footer>
-    <p>&copy; 2026 Reach Point Capital LLC &middot; All Rights Reserved</p>
-    <p><a href="https://www.reachpointlab.com" target="_blank" rel="noopener noreferrer">A Reach Point Lab company</a></p>
+    <p class="footer-copy">&copy; 2026 Reach Point Capital LLC &middot; All Rights Reserved</p>
+    <p class="footer-sub">A <a href="https://www.reachpointlab.com" target="_blank" rel="noopener noreferrer">Reach Point Lab</a> company</p>
   </footer>
 
 </body>
