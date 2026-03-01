@@ -53,13 +53,13 @@
       border-bottom: 1px solid var(--silver);
       display: flex;
       align-items: center;
-      padding: 0 48px;
+      padding: 0 20px;
     }
 
     header img {
-      width: 160px;
-      padding-left: 24px;
+      width: 200px;
       display: block;
+      background: none;
     }
 
     /* ── Hero ── */
@@ -113,11 +113,22 @@
       max-width: 600px;
     }
 
+    .hero-location {
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--label-grey);
+      margin-top: 28px;
+    }
+
     /* ── Section Divider ── */
     .divider {
       width: 100%;
       height: 1px;
       background-color: var(--navy);
+      opacity: 1;
     }
 
     /* ── Contact ── */
@@ -180,7 +191,6 @@
     footer a {
       color: var(--silver);
       text-decoration: none;
-      transition: text-decoration 0.2s ease;
     }
 
     footer a:hover {
@@ -234,6 +244,7 @@
       <h1>Alternative Investment Management &amp; Capital Allocation</h1>
       <div class="hero-divider"></div>
       <p>Reach Point Capital is a Delaware-registered alternative investment firm focused on disciplined research and capital allocation.</p>
+      <p class="hero-location">Est. 2025 &middot; Westport, Connecticut</p>
     </div>
   </section>
 
@@ -250,7 +261,7 @@
 
   <footer>
     <p class="footer-copy">&copy; 2026 Reach Point Capital LLC &middot; All Rights Reserved</p>
-    <p class="footer-sub">Parent company of <a href="https://www.reachpointlab.com" target="_blank" rel="noopener noreferrer">Reach Point Lab</a></p>
+    <p class="footer-sub"><a href="https://www.reachpointlab.com" target="_blank" rel="noopener noreferrer">Parent company of Reach Point Lab</a></p>
   </footer>
 
 </body>
