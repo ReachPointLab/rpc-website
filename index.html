@@ -213,6 +213,85 @@
       text-decoration: underline;
     }
 
+    /* ── Hamburger Menu ── */
+    .hamburger-btn {
+      position: absolute;
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      padding: 8px;
+      z-index: 200;
+    }
+
+    .hamburger-btn span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background-color: var(--silver);
+      border-radius: 1px;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    .hamburger-btn.open span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+
+    .hamburger-btn.open span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger-btn.open span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    .nav-menu {
+      position: absolute;
+      top: 70px;
+      right: 0;
+      background-color: var(--navy);
+      border-left: 1px solid var(--silver);
+      border-bottom: 1px solid var(--silver);
+      min-width: 220px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-8px);
+      transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
+    }
+
+    .nav-menu.open {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .nav-menu a {
+      display: block;
+      padding: 16px 24px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      font-size: 14px;
+      color: var(--silver);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .nav-menu a:hover {
+      background-color: rgba(160, 169, 184, 0.1);
+      color: #ffffff;
+    }
+
+    .nav-menu a + a {
+      border-top: 1px solid rgba(160, 169, 184, 0.2);
+    }
+
     /* ── Responsive ── */
     @media (max-width: 768px) {
       header {
@@ -253,6 +332,15 @@
       <span class="header-logo-name">Reach Point</span>
       <span class="header-logo-sub">Capital</span>
     </div>
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <nav class="nav-menu" id="navMenu">
+      <a href="https://meridian.reachpointcapital.com" target="_blank" rel="noopener noreferrer">ReachPoint Research</a>
+      <a href="#">ReachPoint Lab</a>
+    </nav>
   </header>
 
   <section class="hero">
@@ -281,5 +369,24 @@
     <p class="footer-sub"><a href="https://www.reachpointlab.com" target="_blank" rel="noopener noreferrer">Parent company of Reach Point Lab</a></p>
   </footer>
 
+  <script>
+    (function() {
+      var btn = document.getElementById('hamburgerBtn');
+      var menu = document.getElementById('navMenu');
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var open = menu.classList.toggle('open');
+        btn.classList.toggle('open', open);
+        btn.setAttribute('aria-expanded', open);
+      });
+      document.addEventListener('click', function(e) {
+        if (!menu.contains(e.target) && !btn.contains(e.target)) {
+          menu.classList.remove('open');
+          btn.classList.remove('open');
+          btn.setAttribute('aria-expanded', 'false');
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
