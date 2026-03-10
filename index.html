@@ -196,17 +196,20 @@
     /* Dropdown */
     .dropdown {
       position: absolute;
-      top: calc(100% + 8px);
+      top: 100%;
       right: 0;
+      padding-top: 8px;
       min-width: 220px;
-      background: var(--bg-2);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 8px;
       opacity: 0;
       transform: translateY(-6px);
       pointer-events: none;
       transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+    .dropdown-inner {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 8px;
       backdrop-filter: blur(20px);
       box-shadow: 0 16px 40px rgba(0,0,0,0.2);
     }
@@ -452,6 +455,7 @@
       background: radial-gradient(ellipse at bottom right, rgba(27,58,107,0.2), transparent 60%);
       opacity: 0;
       transition: opacity 0.4s;
+      pointer-events: none;
     }
     .portfolio-card:hover { background: var(--surface-h); border-color: var(--border-h); }
     .portfolio-card:hover::before { opacity: 1; }
@@ -520,6 +524,8 @@
       color: var(--text-2);
       text-decoration: none;
       transition: color 0.2s, gap 0.2s;
+      position: relative;
+      z-index: 2;
     }
     .card-link:hover { color: var(--text-1); gap: 10px; }
 
@@ -675,17 +681,19 @@
               </svg>
             </button>
             <div class="dropdown">
-              <a href="https://reachpointlab.com" target="_blank" class="dropdown-item">
-                <div class="dropdown-item-name">Reach Point Lab</div>
-                <div class="dropdown-item-desc">Consumer health app studio</div>
-              </a>
-              <div class="dropdown-divider"></div>
-              <div class="dropdown-sub">
-                <div class="dropdown-sub-label">Reach Point Research</div>
-                <a href="https://meridian.reachpointcapital.com" target="_blank" class="dropdown-sub-item">
-                  <span>Meridian</span>
-                  <span class="tag">Live</span>
+              <div class="dropdown-inner">
+                <a href="https://reachpointlab.com" target="_blank" class="dropdown-item">
+                  <div class="dropdown-item-name">Reach Point Lab</div>
+                  <div class="dropdown-item-desc">Consumer health app studio</div>
                 </a>
+                <div class="dropdown-divider"></div>
+                <div class="dropdown-sub">
+                  <div class="dropdown-sub-label">Reach Point Research</div>
+                  <a href="https://meridian.reachpointcapital.com" target="_blank" class="dropdown-sub-item">
+                    <span>Meridian</span>
+                    <span class="tag">Live</span>
+                  </a>
+                </div>
               </div>
             </div>
           </div>
@@ -771,7 +779,7 @@
             <span class="tag-pill">Consumer</span>
             <span class="tag-pill">Free Core</span>
           </div>
-          <a href="https://reachpointlab.com" target="_blank" class="card-link">
+          <a href="https://reachpointlab.com" target="_blank" rel="noopener" class="card-link">
             Visit Studio →
           </a>
           <div class="card-sub">
@@ -803,7 +811,7 @@
             <span class="tag-pill">Open Source</span>
             <span class="tag-pill">React</span>
           </div>
-          <a href="https://meridian.reachpointcapital.com" target="_blank" class="card-link">
+          <a href="https://meridian.reachpointcapital.com" target="_blank" rel="noopener" class="card-link">
             Visit Meridian →
           </a>
           <div class="card-sub">
