@@ -1,0 +1,14 @@
+{
+  "name": "rpc-website",
+  "private": true,
+  "type": "module",
+  "description": "Reach Point Capital website. Static pages plus a markdown-driven newsroom, built into dist/.",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/dev.mjs",
+    "dev:live": "node scripts/dev.mjs --live"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
