@@ -18,7 +18,7 @@ const OG_IMAGE = `${SITE}/assets/og-image.png`;
 const CATEGORIES = ['Company', 'Research', 'Product', 'Press'];
 const SKIP_AT_ROOT = new Set([
   '.git', '.gitignore', '.claude', '.vercel', '.DS_Store', 'node_modules', 'dist', 'docs',
-  'scripts', 'newsroom', 'package.json', 'package-lock.json', 'vercel.json', 'README.md',
+  'scripts', 'newsroom', 'legal', 'package.json', 'package-lock.json', 'vercel.json', 'README.md',
   'index.backup.2026-03-08.html',
 ]);
 
@@ -90,7 +90,8 @@ function renderMarkdown(src) {
 }
 
 // ── posts ──────────────────────────────────────────────────────────────────
-function parsePost(file, raw) {
+// The `---` block at the top of a markdown file: simple "key: value" lines, then the body.
+function frontMatter(file, raw) {
   const m = raw.replace(/\r\n/g, '\n').match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
   if (!m) throw new Error(`${file}: missing the --- front matter block at the top`);
   const meta = {};
@@ -102,6 +103,11 @@ function parsePost(file, raw) {
     if (/^(".*"|'.*')$/.test(v)) v = v.slice(1, -1);
     meta[line.slice(0, i).trim()] = v;
   }
+  return { meta, body: m[2].trim() };
+}
+
+function parsePost(file, raw) {
+  const { meta, body } = frontMatter(file, raw);
   const slug = path.basename(file, '.md');
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
     throw new Error(`${file}: file name must be lowercase words joined by dashes, e.g. my-first-update.md`);
@@ -114,7 +120,6 @@ function parsePost(file, raw) {
     throw new Error(`${file}: "category" must be one of ${CATEGORIES.join(', ')} (got "${meta.category || ''}")`);
   }
   if (!meta.summary) throw new Error(`${file}: "summary" is required (one or two sentences)`);
-  const body = m[2].trim();
   const words = body.split(/\s+/).filter(Boolean).length;
   return {
     slug,
@@ -156,8 +161,10 @@ function extractParts(home) {
   };
 }
 
-function shell(parts, { title, description, canonical, ogType = 'website', noindex = false, jsonLd = '', body }) {
-  const header = parts.header.replaceAll('data-nav="newsroom"', 'data-nav="newsroom" aria-current="page"');
+// `nav` is the header link to mark as the current page (null for pages that are not in the nav).
+// `canonical` is left out for pages that should not name a canonical address, such as the 404 page.
+function shell(parts, { title, description, canonical, ogType = 'website', noindex = false, nav = 'newsroom', jsonLd = '', body }) {
+  const header = nav ? parts.header.replaceAll(`data-nav="${nav}"`, `data-nav="${nav}" aria-current="page"`) : parts.header;
   return `<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
@@ -165,11 +172,11 @@ function shell(parts, { title, description, canonical, ogType = 'website', noind
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>${esc(title)}</title>
   <meta name="description" content="${esc(description)}" />
-${noindex ? '  <meta name="robots" content="noindex" />\n' : ''}  <link rel="canonical" href="${canonical}" />
+${noindex ? '  <meta name="robots" content="noindex" />\n' : ''}${canonical ? `  <link rel="canonical" href="${canonical}" />` : ''}
   <meta property="og:site_name" content="Reach Point Capital" />
   <meta property="og:title" content="${esc(title)}" />
   <meta property="og:description" content="${esc(description)}" />
-  <meta property="og:url" content="${canonical}" />
+${canonical ? `  <meta property="og:url" content="${canonical}" />` : ''}
   <meta property="og:type" content="${ogType}" />
   <meta property="og:image" content="${OG_IMAGE}" />
   <meta name="twitter:card" content="summary_large_image" />
@@ -301,11 +308,88 @@ ${items}
 `;
 }
 
-function sitemapXml(posts, today) {
+// ── legal pages and the 404 page ───────────────────────────────────────────
+// legal/*.md become /privacy/, /disclaimer/ and so on. A page marked `draft: true` is a placeholder for legal review:
+// like draft posts it is built for the local preview only, and the footer links appear only for pages that are built,
+// so a production build cannot ship placeholder legal text.
+async function loadLegal({ drafts }) {
+  const dir = path.join(ROOT, 'legal');
+  const files = (await fs.readdir(dir).catch(() => [])).filter((f) => f.endsWith('.md') && !f.startsWith('_'));
+  const pages = [];
+  for (const f of files) {
+    const slug = path.basename(f, '.md');
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) || ['assets', 'newsroom', 'dist'].includes(slug)) {
+      throw new Error(`legal/${f}: file name must be lowercase words joined by dashes and must not clash with a site folder`);
+    }
+    const { meta, body } = frontMatter(`legal/${f}`, await fs.readFile(path.join(dir, f), 'utf8'));
+    if (!meta.title) throw new Error(`legal/${f}: "title" is required`);
+    pages.push({
+      slug,
+      title: meta.title,
+      summary: meta.summary || '',
+      updated: meta.updated || '',
+      link: meta.link || meta.title,
+      order: Number(meta.order) || 99,
+      draft: meta.draft === 'true',
+      html: renderMarkdown(body),
+      url: `/${slug}/`,
+    });
+  }
+  return pages
+    .filter((p) => drafts || !p.draft)
+    .sort((a, b) => a.order - b.order || a.slug.localeCompare(b.slug));
+}
+
+// Adds a row of legal links to the footer (shared by every page). No pages built, no links.
+function withLegalLinks(footer, pages) {
+  if (!pages.length) return footer;
+  const links = pages.map((p) => `<a href="${p.url}">${esc(p.link)}</a>`).join('\n        ');
+  return footer.replace(/<\/div>\s*<\/footer>$/, `  <nav class="footer-legal" aria-label="Legal">\n        ${links}\n      </nav>\n    </div>\n  </footer>`);
+}
+
+function legalBody(p) {
+  // Square-bracketed capitals in a draft are fill-in-the-blank markers for counsel; make them easy to spot.
+  const html = p.draft ? p.html.replace(/\[([A-Z][^\]<]*)\]/g, '<mark class="placeholder">[$1]</mark>') : p.html;
+  return `    <article class="post">
+      <div class="container container--narrow">
+        <a class="back-link" href="/"><span aria-hidden="true">←</span> Home</a>
+        <header class="post-header">
+          <h1 class="post-title">${esc(p.title)}</h1>
+          ${p.summary ? `<p class="post-summary">${esc(p.summary)}</p>` : ''}
+          ${p.updated ? `<div class="news-meta"><span>Last updated ${esc(p.updated)}</span></div>` : ''}
+        </header>
+        ${p.draft ? '<p class="sample-banner">Draft for legal review. This text is a placeholder: it appears in the local preview only and is left out of the production build until <code>draft: true</code> is removed from its file in <code>legal/</code>.</p>' : ''}
+        <div class="prose">
+${html}
+        </div>
+      </div>
+    </article>`;
+}
+
+function notFoundBody() {
+  return `    <section class="page-hero">
+      <div class="container">
+        <div class="hero-eyebrow"><span class="eyebrow-rule"></span>Error 404</div>
+        <h1 class="page-title"><span class="line"><span>Page not</span></span> <span class="line"><em><span>found.</span></em></span></h1>
+        <p class="page-lede">That address doesn’t lead anywhere. It may have moved, or the link may be mistyped.</p>
+      </div>
+    </section>
+    <section class="news-section">
+      <div class="container">
+        <div class="news-empty" data-reveal>
+          <h2>Where to next?</h2>
+          <p><a href="/">Home</a> &nbsp;·&nbsp; <a href="/newsroom/">Newsroom</a> &nbsp;·&nbsp; <a href="mailto:info@reachpointcapital.com">Contact us</a></p>
+        </div>
+      </div>
+    </section>`;
+}
+
+function sitemapXml(posts, today, legal = []) {
   const urls = [
     { loc: `${SITE}/`, lastmod: today, priority: '1.0' },
     { loc: `${SITE}/newsroom/`, lastmod: posts[0]?.date || today, priority: '0.8' },
     ...posts.map((p) => ({ loc: `${SITE}${p.url}`, lastmod: p.date, priority: '0.6' })),
+    ...legal.map((p) => ({ loc: `${SITE}${p.url}`, lastmod: today, priority: '0.3' })),
   ];
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -320,11 +404,13 @@ ${urls.map((u) => `  <url>
 
 // ── build ──────────────────────────────────────────────────────────────────
 export async function build({ samples = false, drafts = false } = {}) {
-  const [home, posts] = await Promise.all([
+  const [home, posts, legal] = await Promise.all([
     fs.readFile(path.join(ROOT, 'index.html'), 'utf8'),
     loadPosts({ samples, drafts }),
+    loadLegal({ drafts }),
   ]);
-  const parts = extractParts(home);
+  const base = extractParts(home);
+  const parts = { ...base, footer: withLegalLinks(base.footer, legal) };
 
   await fs.rm(DIST, { recursive: true, force: true });
   await fs.mkdir(DIST, { recursive: true });
@@ -341,6 +427,23 @@ export async function build({ samples = false, drafts = false } = {}) {
     await fs.mkdir(path.dirname(file), { recursive: true });
     await fs.writeFile(file, content);
   };
+
+  if (legal.length) await write('index.html', home.replace(base.footer, () => parts.footer)); // the home page's own footer gets the links too
+  await Promise.all(legal.map((p) => write(`${p.slug}/index.html`, shell(parts, {
+    title: `${p.title} — Reach Point Capital`,
+    description: p.summary || p.title,
+    canonical: `${SITE}${p.url}`,
+    noindex: p.draft,
+    nav: null,
+    body: legalBody(p),
+  }))));
+  await write('404.html', shell(parts, { // Vercel serves this for any address that does not exist
+    title: 'Page not found — Reach Point Capital',
+    description: 'The page you were looking for could not be found.',
+    noindex: true,
+    nav: null,
+    body: notFoundBody(),
+  }));
 
   await write('newsroom/index.html', shell(parts, {
     title: 'Newsroom — Reach Point Capital',
@@ -365,14 +468,14 @@ export async function build({ samples = false, drafts = false } = {}) {
     slug: p.slug, title: p.title, date: p.date, dateLabel: fmtDate(p.date),
     category: p.category, summary: p.summary, url: p.url, sample: p.sample, draft: p.draft,
   })), null, 2));
-  await write('sitemap.xml', sitemapXml(published, new Date().toISOString().slice(0, 10)));
+  await write('sitemap.xml', sitemapXml(published, new Date().toISOString().slice(0, 10), legal.filter((p) => !p.draft)));
 
-  return { posts: posts.length, samples: posts.filter((p) => p.sample).length };
+  return { posts: posts.length, samples: posts.filter((p) => p.sample).length, legal: legal.length };
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const args = new Set(process.argv.slice(2));
   build({ samples: args.has('--samples'), drafts: args.has('--drafts') })
-    .then(({ posts, samples }) => console.log(`Built dist/ — ${posts} newsroom post${posts === 1 ? '' : 's'}${samples ? ` (${samples} sample)` : ''}`))
+    .then(({ posts, samples, legal }) => console.log(`Built dist/ — ${posts} newsroom post${posts === 1 ? '' : 's'}${samples ? ` (${samples} sample)` : ''}, ${legal} legal page${legal === 1 ? '' : 's'}, 404 page`))
     .catch((err) => { console.error(`Build failed: ${err.message}`); process.exit(1); });
 }
