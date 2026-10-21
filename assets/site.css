@@ -834,6 +834,17 @@ footer { padding: 72px 0 40px; border-top: 1px solid var(--border); position: re
 }
 .footer-base a { color: var(--text-3); text-decoration: none; transition: color 0.2s; }
 .footer-base a:hover { color: var(--text-2); }
+.footer-legal { display: flex; flex-wrap: wrap; gap: 6px 24px; margin-top: 14px; font-size: 12px; line-height: 1.7; }
+.footer-legal a { color: var(--text-3); text-decoration: none; transition: color 0.2s; }
+.footer-legal a:hover { color: var(--text-2); }
+
+/* Fill-in-the-blank markers in draft legal pages (preview only) */
+.prose mark.placeholder {
+  background: color-mix(in srgb, var(--text-1) 12%, transparent);
+  color: var(--text-1);
+  padding: 0 0.3em;
+  border-radius: 3px;
+}
 
 /* ── ANIMATIONS ── */
 @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
