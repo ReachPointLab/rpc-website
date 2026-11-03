@@ -70,7 +70,7 @@ Service providers that host and operate the sites, currently Vercel Inc. (hostin
 
 ## How long we keep it
 
-- **tranche_ request log.** There is currently no limit: log lines are kept until someone deletes them, and nothing deletes them automatically. [LEGAL REVIEW: set a retention period for the tranche_ log and decide whether old lines should be deleted or anonymised.]
+- **tranche_ request log.** Log lines are deleted automatically after 30 days. [LEGAL REVIEW: confirm that 30 days is the right period; the server's setting can be changed, and decide whether lines should be deleted or anonymised.]
 - **Email correspondence and website analytics.** [LEGAL REVIEW: state how long these are kept.]
 - **Hosting providers.** Vercel and Tailscale keep their own records under their own policies. [LEGAL REVIEW: link to or summarise those policies.]
 
