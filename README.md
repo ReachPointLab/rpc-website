@@ -34,11 +34,11 @@ Placeholder posts (`sample: true`) and drafts (`draft: true`) are left out of pr
 ## Legal pages and the 404 page
 
 `legal/privacy.md` and `legal/disclaimer.md` become `/privacy/` and `/disclaimer/`, and the footer gets a link to each
-page that is built. Both files are currently first drafts (covering the website and tranche_) marked `draft: true`, with
-`[LEGAL REVIEW: …]` markers where counsel needs to confirm or write the wording. Like draft posts, draft legal pages appear in `npm run dev` only:
-production builds leave out the pages **and** their footer links.
+page that is built. Both files are published: they cover the website and tranche_, and the effective date is in
+`updated:`. They were written without a lawyer's review, so when you change how the site or tranche_ handles
+information (for example by adding accounts, analytics or cookies), update the matching sentences here too.
 
-To publish them, replace the placeholder text, set the real effective date in `updated:`, and delete the `draft: true`
-line from each file.
+A legal page marked `draft: true` is a work in progress. Like draft posts, it appears in `npm run dev` only:
+production builds leave out the page **and** its footer link. Remove the line to publish it.
 
 Every build also writes `404.html`, which Vercel serves for any address that does not exist.
