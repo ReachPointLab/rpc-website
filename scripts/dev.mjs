@@ -20,14 +20,17 @@ const MIME = {
 };
 
 // Send the same security headers Vercel will (from vercel.json), so a Content-Security-Policy problem shows up here first.
-let securityHeaders = {};
+// Rules are matched per request: a source such as "/((?!tranche(?:/|$)).*)" is read as an anchored regular expression
+// (enough for the patterns used in vercel.json), so pages a rule excludes get none of its headers, as on Vercel.
+let headerRules = [];
 const loadHeaders = async () => {
   const config = JSON.parse(await fs.readFile(path.join(ROOT, 'vercel.json'), 'utf8'));
-  securityHeaders = Object.fromEntries((config.headers || [])
-    .filter((rule) => rule.source === '/(.*)')
-    .flatMap((rule) => rule.headers)
-    .map(({ key, value }) => [key.toLowerCase(), value]));
+  headerRules = (config.headers || []).map((rule) => ({
+    match: new RegExp(`^${rule.source}$`, 'i'),
+    headers: Object.fromEntries(rule.headers.map(({ key, value }) => [key.toLowerCase(), value])),
+  }));
 };
+const headersFor = (pathname) => Object.assign({}, ...headerRules.filter((r) => r.match.test(pathname)).map((r) => r.headers));
 
 let building = Promise.resolve();
 const rebuild = () => {
@@ -44,7 +47,7 @@ const server = http.createServer(async (req, res) => {
     await building;
     const { pathname } = new URL(req.url, 'http://localhost');
     if (pathname === '/_vercel/insights/script.js') { // only exists on Vercel; stub it so the local console stays clean
-      res.writeHead(200, { ...securityHeaders, 'content-type': MIME['.js'] }).end('/* Vercel Analytics is served by Vercel only */');
+      res.writeHead(200, { ...headersFor(pathname), 'content-type': MIME['.js'] }).end('/* Vercel Analytics is served by Vercel only */');
       return;
     }
     let file = path.join(DIST, path.normalize(decodeURIComponent(pathname)));
@@ -56,11 +59,11 @@ const server = http.createServer(async (req, res) => {
     }
     if (!stat) { // like Vercel: the built 404.html with a 404 status
       const page = await fs.readFile(path.join(DIST, '404.html')).catch(() => null);
-      res.writeHead(404, { ...securityHeaders, 'content-type': page ? MIME['.html'] : 'text/plain', 'cache-control': 'no-store' }).end(page || 'Not found');
+      res.writeHead(404, { ...headersFor(pathname), 'content-type': page ? MIME['.html'] : 'text/plain', 'cache-control': 'no-store' }).end(page || 'Not found');
       return;
     }
     res.writeHead(200, {
-      ...securityHeaders,
+      ...headersFor(pathname),
       'content-type': MIME[path.extname(file)] || 'application/octet-stream',
       'cache-control': 'no-store',
     });
