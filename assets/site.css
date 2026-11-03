@@ -277,6 +277,8 @@ nav { display: flex; align-items: center; gap: 8px; }
   color: var(--text-3);
   margin-left: auto;
 }
+.dropdown-sub-item.has-desc { flex-wrap: wrap; row-gap: 2px; }
+.dropdown-sub-item .sub-desc { flex-basis: 100%; font-size: 11.5px; color: var(--text-3); font-weight: 300; }
 
 .nav-right { display: flex; align-items: center; gap: 8px; }
 .theme-toggle, .menu-toggle {
@@ -589,6 +591,8 @@ nav { display: flex; align-items: center; gap: 8px; }
 .sub-item { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--border); }
 .sub-item:last-child { border-bottom: none; }
 .sub-item-name { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 400; color: var(--text-1); }
+a.sub-item-name { text-decoration: none; transition: color 0.2s; }
+a.sub-item-name:hover { color: var(--text-2); }
 .sub-item-meta { display: flex; align-items: center; gap: 14px; }
 .sub-item-desc { font-size: 13px; color: var(--text-3); }
 .status {
