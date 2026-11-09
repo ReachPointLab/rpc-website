@@ -438,6 +438,11 @@ nav { display: flex; align-items: center; gap: 8px; }
   animation-delay: calc(0.25s + var(--i, 0) * 0.13s), 1.6s;
   padding-right: 0.06em;
 }
+.hero-title em > span {
+  /* Keep italic descenders inside the text-fill box without changing line spacing. */
+  padding-bottom: 0.16em;
+  margin-bottom: -0.16em;
+}
 
 .hero-body {
   font-size: 16px;
