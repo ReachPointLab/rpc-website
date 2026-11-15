@@ -2,7 +2,7 @@
 title: Disclaimer
 link: Disclaimer
 order: 2
-updated: November 3, 2026
+updated: November 13, 2026
 summary: Important information about the content of this website and about tranche_.
 ---
 
@@ -24,7 +24,8 @@ tranche_ (at reachpointcapital.com/tranche/) shows the capital structure of publ
 - **Check the filing.** Each figure comes with a quote from the filing it was taken from. Before you rely on a figure, read the quote and the original filing, and confirm it yourself. The filing is the authoritative source, not tranche_.
 - **Timing.** A result reflects the filing it was built from. It may be out of date, and it may not reflect later filings, amendments, refinancings, repayments or other events.
 - **SEC filings are public documents.** The underlying filings are public and free to read on the SEC's website. tranche_ does not give you any private or inside information.
-- **Changes.** We may change, limit or withdraw tranche_ at any time, including how much of it is open to the public.
+- **Signing in.** Signing in is optional and does not change anything on this page. An account gives you a place to keep your lists, not more reliable information and not advice.
+- **Changes.** We may change, limit or withdraw tranche_ or its accounts at any time, including how much of it is open to the public.
 
 ## No warranty and limit of liability
 
