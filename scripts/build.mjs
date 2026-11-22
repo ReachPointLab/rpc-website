@@ -14,7 +14,7 @@ export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '
 export const DIST = path.join(ROOT, process.env.RPC_OUT || 'dist');
 
 const SITE = 'https://reachpointcapital.com';
-const OG_IMAGE = `${SITE}/assets/og-image.png`;
+const OG_IMAGE = `${SITE}/assets/og-card.jpg`; // 1200x630 link-preview card
 const CATEGORIES = ['Company', 'Research', 'Product', 'Press'];
 const SKIP_AT_ROOT = new Set([
   '.git', '.gitignore', '.claude', '.vercel', '.DS_Store', 'node_modules', 'dist', 'docs',
@@ -179,10 +179,14 @@ ${noindex ? '  <meta name="robots" content="noindex" />\n' : ''}${canonical ? ` 
 ${canonical ? `  <meta property="og:url" content="${canonical}" />` : ''}
   <meta property="og:type" content="${ogType}" />
   <meta property="og:image" content="${OG_IMAGE}" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Reach Point Capital — Capital. Research. Technology." />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="${esc(title)}" />
   <meta name="twitter:description" content="${esc(description)}" />
   <meta name="twitter:image" content="${OG_IMAGE}" />
+  <meta name="twitter:image:alt" content="Reach Point Capital — Capital. Research. Technology." />
   ${parts.sharedHead}
 ${jsonLd}</head>
 <body>

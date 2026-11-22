@@ -1,0 +1,14 @@
+{
+  "name": "Reach Point Capital",
+  "short_name": "Reach Point",
+  "description": "A holding company building at the intersection of alternative investment research and applied technology.",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#07111F",
+  "theme_color": "#07111F",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
